@@ -42,7 +42,7 @@ local MainTab = Window:CreateTab("Main", nil) -- Title, Image
 
 local ReachSection = MainTab:CreateSection("Reach")
 
-local Toggle = MainTab:CreateToggle({
+local ReachToggle = MainTab:CreateToggle({
 	Name = "Reach",
 	CurrentValue = false,
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
@@ -71,6 +71,47 @@ local Slider = MainTab:CreateSlider({
 	Suffix = "Radius",
 	CurrentValue = 10,
 	Flag = "RangeSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		-- The function that takes place when the slider changes
+		-- The variable (Value) is a number which correlates to the value the slider is currently at
+	end,
+})
+
+
+
+local VisualSection = MainTab:CreateSection("Visuals")
+
+local VisualToggle = MainTab:CreateToggle({
+	Name = "Visualizer",
+	CurrentValue = false,
+	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		-- The function that takes place when the toggle is pressed
+		-- The variable (Value) is a boolean on whether the toggle is true or false
+	end,
+})
+
+
+
+local DamageSection = MainTab:CreateSection("Damage")
+
+local DamageToggle = MainTab:CreateToggle({
+	Name = "Damage",
+	CurrentValue = false,
+	Flag = "DamageToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		-- The function that takes place when the toggle is pressed
+		-- The variable (Value) is a boolean on whether the toggle is true or false
+	end,
+})
+
+local DamageSlider = MainTab:CreateSlider({
+	Name = "Damage",
+	Range = {1.0, 2.0},
+	Increment = 0.1,
+	Suffix = "X",
+	CurrentValue = 1.0,
+	Flag = "DamageSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Value)
 		-- The function that takes place when the slider changes
 		-- The variable (Value) is a number which correlates to the value the slider is currently at
