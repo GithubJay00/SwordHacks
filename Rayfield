@@ -144,7 +144,7 @@ local Dropdown = MainTab:CreateDropdown({
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Options)
-		getgenv.SelectedOption = Options
+		getgenv.SelectedOption = Options ----
 		Select()
 	end,
 })
@@ -186,16 +186,25 @@ local VisualToggle = MainTab:CreateToggle({
 			visualPart.CastShadow = false
 			visualPart.Shape = "Ball"
 			visualPart.Color = Color3.fromRGB(0, 0, 0)
-			getgenv().visualPart.Transparency = 0.6
+			visualPart.Transparency = 0.6
 			visualPart.Material = "ForceField"
 
 			RunService.Stepped:Connect(function()
 				visualPart.CFrame = Handle.CFrame
 				visualPart.Size = Vector3.new(getgenv().range, getgenv().range, getgenv().range)
 			end)
+		end
+		
+		if VisualValue == false then
 			
-		else
-			getgenv().visualPart.Transparency = 1
+			local player = game.Players.LocalPlayer
+			local character = player.Character
+
+			local tool = character and character:FindFirstChildOfClass("Tool")
+			local Handle = tool and tool:FindFirstChild("Handle")
+			
+			local visualPart = Handle:FindFirstChild("VisualPart")
+			visualPart.Transparency = 1
 		end
 	end,
 })
