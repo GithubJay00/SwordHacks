@@ -6,11 +6,11 @@ local Player = Players.LocalPlayer
 local Character = Player.Character
 local Humanoid = Character and Character:FindFirstChild("Humanoid")
 
-getgenv().SlectedOption = nil
+getgenv().SelectedOption = nil
 getgenv().range = nil
 
 function Select()
-	if getgenv().SlectedOption == "FireTouchInterest" then
+	if getgenv().SelectedOption == "FireTouchInterest" then
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= Player.Name then
 
@@ -45,7 +45,7 @@ function Select()
 			end
 		end
 		
-	elseif getgenv().SlectedOption == "C-Bring" then
+	elseif getgenv().SelectedOption == "C-Bring" then
 		for _, p in ipairs(Players:GetPlayers()) do
 			if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
 
