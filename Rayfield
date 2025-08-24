@@ -1,5 +1,87 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Player = Players.LocalPlayer
+local Character = Player.Character
+local Humanoid = Character and Character:FindFirstChild("Humanoid")
+
+getgenv().SlectedOption = nil
+getgenv().range = nil
+
+function Select()
+	if getgenv().SlectedOption == "FireTouchInterest" then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= Player.Name then
+
+				local pchar = p.Character
+				local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
+				
+				local char = Player.Character
+				local hrp = char:WaitForChild("HumanoidRootPart")
+
+				local limbs = {
+					RightArm = pchar:FindFirstChild("Right Arm"),
+					LeftArm = pchar:FindFirstChild("Left Arm"),
+					RightLeg = pchar:FindFirstChild("Right Leg"),
+					LeftLeg = pchar:FindFirstChild("Left Leg"),
+					Torso = pchar:FindFirstChild("Torso"),
+					HumanoidRootPart = pchar:FindFirstChild("HumanoidRootPart"),
+					Head = pchar:FindFirstChild("Head")
+				}
+
+				local Distance = (hrp.Position - phrp.Position).Magnitude
+				if Distance <= getgenv().range then
+					local tool = char and char:FindFirstChildOfClass("Tool")
+					local Handle = tool and tool:FindFirstChild("Handle")
+					if tool and Handle then
+						tool:Activate()
+
+						firetouchinterest(limbs.HumanoidRootPart, Handle, 0)
+						firetouchinterest(limbs.HumanoidRootPart, Handle, 1)
+
+					end
+				end
+			end
+		end
+		
+	elseif getgenv().SlectedOption == "C-Bring" then
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
+
+				local Tool = Player:FindFirstChildOfClass("Tool") or Character:FindFirstChildWhichIsA("Tool")
+				local Handle = Tool and Tool:FindFirstChild("Handle")
+
+				local pCharacter = p.Character
+
+				if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
+					local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
+					if distance <= getgenv().range then
+
+						Tool:Activate()
+
+						local limbs = {
+							pCharacter:FindFirstChild("Left Arm"),
+							pCharacter:FindFirstChild("Right Arm"),
+							pCharacter:FindFirstChild("Left Leg"),
+							pCharacter:FindFirstChild("Right Leg")
+						}
+
+						for _, limb in ipairs(limbs) do
+							if limb then
+								limb:BreakJoints()
+								limb.CFrame = Handle.CFrame
+								limb.Transparency = 1
+								limb.CanCollide = false
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 local Window = Rayfield:CreateWindow({
 	Name = "SwordHacks",
 	Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
@@ -46,10 +128,12 @@ local ReachToggle = MainTab:CreateToggle({
 	Name = "Reach",
 	CurrentValue = false,
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Value)
-		-- The function that takes place when the toggle is pressed
-		-- The variable (Value) is a boolean on whether the toggle is true or false
-		print(Value)
+	Callback = function(ReachValue)
+		if ReachValue == true then
+			RunService.Stepped:Connect(function()
+				Select()
+			end)
+		end
 	end,
 })
 
@@ -60,9 +144,8 @@ local Dropdown = MainTab:CreateDropdown({
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Options)
-		-- The function that takes place when the selected option is changed
-		-- The variable (Options) is a table of strings for the current selected options
-		print(Options)
+		getgenv.SelectedOption = Options
+		Select()
 	end,
 })
 
@@ -73,10 +156,8 @@ local ReachSlider = MainTab:CreateSlider({
 	Suffix = "Radius",
 	CurrentValue = 10,
 	Flag = "RangeSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Value)
-		-- The function that takes place when the slider changes
-		-- The variable (Value) is a number which correlates to the value the slider is currently at
-		print(Value)
+	Callback = function(RangeValue)
+		getgenv().range = RangeValue
 	end,
 })
 
@@ -88,9 +169,34 @@ local VisualToggle = MainTab:CreateToggle({
 	Name = "Reach Visualizer",
 	CurrentValue = false,
 	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Value)
-		-- The function that takes place when the toggle is pressed
-		-- The variable (Value) is a boolean on whether the toggle is true or false
+	Callback = function(VisualValue)
+		if VisualValue == true then
+			
+			local player = game.Players.LocalPlayer
+			local character = player.Character
+
+			local tool = character and character:FindFirstChildOfClass("Tool")
+			local Handle = tool and tool:FindFirstChild("Handle")
+
+			local visualPart = Instance.new("Part")
+			visualPart.Parent = Handle
+			visualPart.Name = "VisualPart"
+			visualPart.Anchored = true
+			visualPart.CanCollide = false
+			visualPart.CastShadow = false
+			visualPart.Shape = "Ball"
+			visualPart.Color = Color3.fromRGB(0, 0, 0)
+			getgenv().visualPart.Transparency = 0.6
+			visualPart.Material = "ForceField"
+
+			RunService.Stepped:Connect(function()
+				visualPart.CFrame = Handle.CFrame
+				visualPart.Size = Vector3.new(getgenv().range, getgenv().range, getgenv().range)
+			end)
+			
+		else
+			getgenv().visualPart.Transparency = 1
+		end
 	end,
 })
 
