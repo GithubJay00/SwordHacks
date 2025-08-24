@@ -8,77 +8,82 @@ local Humanoid = Character and Character:FindFirstChild("Humanoid")
 
 getgenv().SelectedOption = nil
 getgenv().range = nil
+getgenv().ReachToggle = nil
 
 function Select()
-	if getgenv().SelectedOption == "FireTouchInterest" then
-		for _, p in pairs(Players:GetPlayers()) do
-			if p.Name ~= Player.Name then
+	if getgenv().SelectedOption == "FireTouchInterest" and getgenv().ReachToggle == true then
+		RunService.Stepped:Connect(function()
+			for _, p in pairs(Players:GetPlayers()) do
+				if p.Name ~= Player.Name then
 
-				local pchar = p.Character
-				local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
-				
-				local char = Player.Character
-				local hrp = char:WaitForChild("HumanoidRootPart")
+					local pchar = p.Character
+					local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
 
-				local limbs = {
-					RightArm = pchar:FindFirstChild("Right Arm"),
-					LeftArm = pchar:FindFirstChild("Left Arm"),
-					RightLeg = pchar:FindFirstChild("Right Leg"),
-					LeftLeg = pchar:FindFirstChild("Left Leg"),
-					Torso = pchar:FindFirstChild("Torso"),
-					HumanoidRootPart = pchar:FindFirstChild("HumanoidRootPart"),
-					Head = pchar:FindFirstChild("Head")
-				}
+					local char = Player.Character
+					local hrp = char:WaitForChild("HumanoidRootPart")
 
-				local Distance = (hrp.Position - phrp.Position).Magnitude
-				if Distance <= getgenv().range then
-					local tool = char and char:FindFirstChildOfClass("Tool")
-					local Handle = tool and tool:FindFirstChild("Handle")
-					if tool and Handle then
-						tool:Activate()
+					local limbs = {
+						RightArm = pchar:FindFirstChild("Right Arm"),
+						LeftArm = pchar:FindFirstChild("Left Arm"),
+						RightLeg = pchar:FindFirstChild("Right Leg"),
+						LeftLeg = pchar:FindFirstChild("Left Leg"),
+						Torso = pchar:FindFirstChild("Torso"),
+						HumanoidRootPart = pchar:FindFirstChild("HumanoidRootPart"),
+						Head = pchar:FindFirstChild("Head")
+					}
 
-						firetouchinterest(limbs.HumanoidRootPart, Handle, 0)
-						firetouchinterest(limbs.HumanoidRootPart, Handle, 1)
+					local Distance = (hrp.Position - phrp.Position).Magnitude
+					if Distance <= getgenv().range then
+						local tool = char and char:FindFirstChildOfClass("Tool")
+						local Handle = tool and tool:FindFirstChild("Handle")
+						if tool and Handle then
+							tool:Activate()
 
+							firetouchinterest(limbs.HumanoidRootPart, Handle, 0)
+							firetouchinterest(limbs.HumanoidRootPart, Handle, 1)
+
+						end
 					end
 				end
 			end
-		end
+		end)
 		
-	elseif getgenv().SelectedOption == "C-Bring" then
-		for _, p in ipairs(Players:GetPlayers()) do
-			if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
+	elseif getgenv().SelectedOption == "C-Bring" and getgenv().ReachToggle == true then
+		RunService.Stepped:Connect(function()
+			for _, p in ipairs(Players:GetPlayers()) do
+				if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
 
-				local Tool = Player:FindFirstChildOfClass("Tool") or Character:FindFirstChildWhichIsA("Tool")
-				local Handle = Tool and Tool:FindFirstChild("Handle")
+					local Tool = Player:FindFirstChildOfClass("Tool") or Character:FindFirstChildWhichIsA("Tool")
+					local Handle = Tool and Tool:FindFirstChild("Handle")
 
-				local pCharacter = p.Character
+					local pCharacter = p.Character
 
-				if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
-					local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
-					if distance <= getgenv().range then
+					if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
+						local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
+						if distance <= getgenv().range then
 
-						Tool:Activate()
+							Tool:Activate()
 
-						local limbs = {
-							pCharacter:FindFirstChild("Left Arm"),
-							pCharacter:FindFirstChild("Right Arm"),
-							pCharacter:FindFirstChild("Left Leg"),
-							pCharacter:FindFirstChild("Right Leg")
-						}
+							local limbs = {
+								pCharacter:FindFirstChild("Left Arm"),
+								pCharacter:FindFirstChild("Right Arm"),
+								pCharacter:FindFirstChild("Left Leg"),
+								pCharacter:FindFirstChild("Right Leg")
+							}
 
-						for _, limb in ipairs(limbs) do
-							if limb then
-								limb:BreakJoints()
-								limb.CFrame = Handle.CFrame
-								limb.Transparency = 1
-								limb.CanCollide = false
+							for _, limb in ipairs(limbs) do
+								if limb then
+									limb:BreakJoints()
+									limb.CFrame = Handle.CFrame
+									limb.Transparency = 1
+									limb.CanCollide = false
+								end
 							end
 						end
 					end
 				end
 			end
-		end
+		end)
 	end
 end
 
@@ -129,11 +134,7 @@ local ReachToggle = MainTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(ReachValue)
-		if ReachValue == true then
-			RunService.Stepped:Connect(function()
-				Select()
-			end)
-		end
+		getgenv().ReachToggle = ReachValue
 	end,
 })
 
