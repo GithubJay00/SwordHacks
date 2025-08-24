@@ -49,22 +49,24 @@ local ReachToggle = MainTab:CreateToggle({
 	Callback = function(Value)
 		-- The function that takes place when the toggle is pressed
 		-- The variable (Value) is a boolean on whether the toggle is true or false
+		print(Value)
 	end,
 })
 
 local Dropdown = MainTab:CreateDropdown({
 	Name = "Reach Type",
 	Options = {"FireTouchInterest","C-Bring"},
-	CurrentOption = {"C-Bring"},
+	CurrentOption = {"FireTouchInterest"},
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Options)
 		-- The function that takes place when the selected option is changed
 		-- The variable (Options) is a table of strings for the current selected options
+		print(Options)
 	end,
 })
 
-local Slider = MainTab:CreateSlider({
+local ReachSlider = MainTab:CreateSlider({
 	Name = "Range",
 	Range = {1, 20},
 	Increment = 1,
@@ -74,6 +76,7 @@ local Slider = MainTab:CreateSlider({
 	Callback = function(Value)
 		-- The function that takes place when the slider changes
 		-- The variable (Value) is a number which correlates to the value the slider is currently at
+		print(Value)
 	end,
 })
 
