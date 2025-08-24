@@ -144,7 +144,7 @@ local Dropdown = MainTab:CreateDropdown({
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Options)
-		getgenv.SelectedOption = Options ----
+		getgenv().SelectedOption = Options
 		Select()
 	end,
 })
