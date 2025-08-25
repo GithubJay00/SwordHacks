@@ -20,8 +20,8 @@ function Select()
 					local pchar = p.Character
 					local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
 
-					local char = Player.Character
-					local hrp = char:WaitForChild("HumanoidRootPart")
+					local Character = Player.Character
+					local hrp = Character:WaitForChild("HumanoidRootPart")
 
 					local limbs = {
 						RightArm = pchar:FindFirstChild("Right Arm"),
@@ -35,7 +35,7 @@ function Select()
 
 					local Distance = (hrp.Position - phrp.Position).Magnitude
 					if Distance <= getgenv().range then
-						local tool = char and char:FindFirstChildOfClass("Tool")
+						local tool = Character and Character:FindFirstChildOfClass("Tool")
 						local Handle = tool and tool:FindFirstChild("Handle")
 						if tool and Handle then
 							tool:Activate()
@@ -54,8 +54,8 @@ function Select()
 			for _, p in ipairs(Players:GetPlayers()) do
 				if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
 
-					local Tool = Player:FindFirstChildOfClass("Tool") or Character:FindFirstChildWhichIsA("Tool")
-					local Handle = Tool and Tool:FindFirstChild("Handle")
+					local tool = Character and Character:FindFirstChildOfClass("Tool")
+					local Handle = tool and tool:FindFirstChild("Handle")
 
 					local pCharacter = p.Character
 
@@ -87,6 +87,36 @@ function Select()
 		end)
 	end
 end
+
+
+if getgenv().VisualToggle == true then
+	
+	local tool = Character and Character:FindFirstChildOfClass("Tool")
+	local Handle = tool and tool:FindFirstChild("Handle")
+	
+	local visualPart = Instance.new("Part")
+	
+	visualPart.Name = "VisualPart"
+	visualPart.Anchored = true
+	visualPart.CanCollide = false
+	visualPart.CastShadow = false
+	visualPart.Shape = "Ball"
+	visualPart.Color = Color3.fromRGB(0, 0, 0)
+	visualPart.Transparency = 0.6
+	visualPart.Material = "ForceField"
+	
+	RunService.Stepped:Connect(function()
+		visualPart.CFrame = Handle.CFrame
+		visualPart.Size = Vector3.new(getgenv().range, getgenv().range, getgenv().range)
+	end)
+	
+elseif getgenv().VisualToggle == false then
+	local visualPart = workspace:FindFirstChild("VisualPart")
+	if visualPart then
+		visualPart:Destroy()
+	end
+end
+
 
 local Window = Rayfield:CreateWindow({
 	Name = "SwordHacks",
