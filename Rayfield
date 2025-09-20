@@ -33,6 +33,7 @@ VisualP.CastShadow = false
 VisualP.Color = Color3.fromRGB(0, 0, 0)
 VisualP.Transparency = 0.9
 VisualP.Material = Enum.Material.Neon
+VisualP.Shape = "Ball"
 
 local texture = Instance.new("Texture")
 texture.Parent = VisualP
