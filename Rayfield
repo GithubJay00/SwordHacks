@@ -21,7 +21,15 @@ getgenv().Settings = {
 
 	Damage = nil , 
 	
-	Visualizer = nil
+	Visualizer = nil ,
+	
+	HitboxToggle = nil , 
+	
+	HitboxSize = nil , 
+	
+	HitboxVisual = nil,
+	
+	HitBoxColor = nil
 	
 }
 
@@ -115,6 +123,7 @@ local MainTab = Window:CreateTab("Main", nil) -- Title, Image
 
 
 
+
 local ReachSection = MainTab:CreateSection("Reach")
 
 local ReachToggle = MainTab:CreateToggle({
@@ -127,10 +136,6 @@ local ReachToggle = MainTab:CreateToggle({
 })
 
 
-
-
-
-
 local Dropdown = MainTab:CreateDropdown({
 	Name = "Reach Type",
 	Options = { "FireTouchInterest", "C-Bring" },
@@ -141,9 +146,6 @@ local Dropdown = MainTab:CreateDropdown({
 		Settings.ReachT = ReachOption
 	end,
 })
-
-
-
 
 
 local ReachSlider = MainTab:CreateSlider({
@@ -189,12 +191,8 @@ local DamageToggle = MainTab:CreateToggle({
 })
 
 
-
-
-
-
 local DamageSlider = MainTab:CreateSlider({
-	Name = "Damage",
+	Name = "Damage Amount",
 	Range = {1, 2},
 	Increment = 1,
 	Suffix = "X",
@@ -203,6 +201,51 @@ local DamageSlider = MainTab:CreateSlider({
 	Callback = function(DamageValue)
 		Settings.Damage = DamageValue
 	end,
+})
+
+
+
+local HitboxSection = MainTab:CreateSection("Hitbox")
+
+local HitboxToggle = MainTab:CreateToggle({
+	Name = "Hitbox Toggle",
+	CurrentValue = false,
+	Flag = "HitboxToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(HitboxToggleValue)
+		Settings.HitboxToggle = HitboxToggleValue
+	end,
+})
+
+
+local HitboxSlider = MainTab:CreateSlider({
+	Name = "Size",
+	Range = {1, 20},
+	Increment = 1,
+	Suffix = "Htibox",
+	CurrentValue = 5.5,
+	Flag = "HitboxSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(HitboxSliderValue)
+		Settings.HitboxSize = HitboxSliderValue
+	end,
+})
+
+
+local HitboxVisualToggle = MainTab:CreateToggle({
+	Name = "Hitbox Visual",
+	CurrentValue = false,
+	Flag = "HitboxVisual", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(HitboxVisualValue)
+		Settings.HitboxVisual = HitboxVisualValue
+	end,
+})
+
+local HtiboxColorPicker = MainTab:CreateColorPicker({
+	Name = "Hitbox Color",
+	Color = Color3.fromRGB(0, 0, 0),
+	Flag = "HitboxColor1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(HitbotColor)
+		Settings.HitboxColor = HitbotColor
+	end
 })
 
 
@@ -314,6 +357,7 @@ RunService.Stepped:Connect(function()
 end)
 
 
+
 RunService.Stepped:Connect(function()
 	
 	local Character = player.Character
@@ -332,6 +376,58 @@ RunService.Stepped:Connect(function()
 				VisualP.CFrame = handle.CFrame
 			else
 				VisualP.Parent = nil
+			end
+		end
+	end
+end)
+
+
+
+RunService.Stepped:Connect(function()
+	if Settings.HitboxToggle then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+				pcall(function()
+
+					local qChar = p.Character
+					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+
+					qHRP.Size = Vector3.new(Settings.HitboxSize, Settings.HitboxSize, Settings.HitboxSize)
+
+					qHRP.Color = Settings.HitBoxColor
+
+					qHRP.CanCollide = false
+					
+					if Settings.HitboxVisual then
+						qHRP.Transparency = 0.9
+						
+					else
+						qHRP.Transparency = 1
+					end
+				end)
+			end
+		end
+	else
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+				pcall(function()
+
+					local qChar = p.Character
+					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+
+					qHRP.Size = Vector3.new(2, 2, 1)
+
+					qHRP.Color = Color3.new(163, 162, 165)
+
+					qHRP.CanCollide = false
+
+					if Settings.HitboxVisual then
+						qHRP.Transparency = 0
+						
+					else
+						qHRP.Transparency = 1
+					end
+				end)
 			end
 		end
 	end
