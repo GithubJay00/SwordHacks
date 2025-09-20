@@ -1,121 +1,74 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Player = Players.LocalPlayer
-local Character = Player.Character
-local Humanoid = Character and Character:FindFirstChild("Humanoid")
 
-getgenv().SelectedOption = nil
-getgenv().range = nil
-getgenv().ReachToggle = nil
-getgenv().VisualToggle = nil
-
-function Select()
-	if getgenv().SelectedOption == "FireTouchInterest" and getgenv().ReachToggle == true then
-		RunService.Stepped:Connect(function()
-			for _, p in pairs(Players:GetPlayers()) do
-				if p.Name ~= Player.Name then
-
-					local pchar = p.Character
-					local phrp = pchar and pchar:FindFirstChild("HumanoidRootPart")
-
-					local Character = Player.Character
-					local hrp = Character:WaitForChild("HumanoidRootPart")
-
-					local limbs = {
-						RightArm = pchar:FindFirstChild("Right Arm"),
-						LeftArm = pchar:FindFirstChild("Left Arm"),
-						RightLeg = pchar:FindFirstChild("Right Leg"),
-						LeftLeg = pchar:FindFirstChild("Left Leg"),
-						Torso = pchar:FindFirstChild("Torso"),
-						HumanoidRootPart = pchar:FindFirstChild("HumanoidRootPart"),
-						Head = pchar:FindFirstChild("Head")
-					}
-
-					local Distance = (hrp.Position - phrp.Position).Magnitude
-					if Distance <= getgenv().range then
-						local tool = Character and Character:FindFirstChildOfClass("Tool")
-						local Handle = tool and tool:FindFirstChild("Handle")
-						if tool and Handle then
-							tool:Activate()
-
-							firetouchinterest(limbs.HumanoidRootPart, Handle, 0)
-							firetouchinterest(limbs.HumanoidRootPart, Handle, 1)
-
-						end
-					end
-				end
-			end
-		end)
-		
-	elseif getgenv().SelectedOption == "C-Bring" and getgenv().ReachToggle == true then
-		RunService.Stepped:Connect(function()
-			for _, p in ipairs(Players:GetPlayers()) do
-				if p.name ~= Player.name and Humanoid and Humanoid.Health ~= 0 then
-
-					local tool = Character and Character:FindFirstChildOfClass("Tool")
-					local Handle = tool and tool:FindFirstChild("Handle")
-
-					local pCharacter = p.Character
-
-					if Tool and Handle and pCharacter and pCharacter:FindFirstChild("HumanoidRootPart") then
-						local distance = (Character.HumanoidRootPart.Position - pCharacter.HumanoidRootPart.Position).Magnitude
-						if distance <= getgenv().range then
-
-							Tool:Activate()
-
-							local limbs = {
-								pCharacter:FindFirstChild("Left Arm"),
-								pCharacter:FindFirstChild("Right Arm"),
-								pCharacter:FindFirstChild("Left Leg"),
-								pCharacter:FindFirstChild("Right Leg")
-							}
-
-							for _, limb in ipairs(limbs) do
-								if limb then
-									limb:BreakJoints()
-									limb.CFrame = Handle.CFrame
-									limb.Transparency = 1
-									limb.CanCollide = false
-								end
-							end
-						end
-					end
-				end
-			end
-		end)
-	end
+if game.GameId == 6361937392 then
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("Superman").Parent = nil
+	game:GetService("ReplicatedFirst"):FindFirstChild("Prod"):FindFirstChild("Stats").Parent = nil
+	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("UIScaleHandler").Parent = nil
 end
 
 
-if getgenv().VisualToggle == true then
+getgenv().Settings = {
 	
-	local tool = Character and Character:FindFirstChildOfClass("Tool")
-	local Handle = tool and tool:FindFirstChild("Handle")
+	Toggle = nil ,
 	
-	local visualPart = Instance.new("Part")
+	ReachT = nil,
+
+	Range = nil , 
+
+	Amplify = nil , 
+
+	Damage = nil , 
 	
-	visualPart.Name = "VisualPart"
-	visualPart.Anchored = true
-	visualPart.CanCollide = false
-	visualPart.CastShadow = false
-	visualPart.Shape = "Ball"
-	visualPart.Color = Color3.fromRGB(0, 0, 0)
-	visualPart.Transparency = 0.6
-	visualPart.Material = "ForceField"
+	Visualizer = nil
 	
-	RunService.Stepped:Connect(function()
-		visualPart.CFrame = Handle.CFrame
-		visualPart.Size = Vector3.new(getgenv().range, getgenv().range, getgenv().range)
-	end)
-	
-elseif getgenv().VisualToggle == false then
-	local visualPart = workspace:FindFirstChild("VisualPart")
-	if visualPart then
-		visualPart:Destroy()
-	end
-end
+}
+
+
+local VisualP = Instance.new("Part")
+VisualP.Anchored = true
+VisualP.CanCollide = false
+VisualP.CastShadow = false
+VisualP.Color = Color3.fromRGB(0, 0, 0)
+VisualP.Transparency = 0.9
+VisualP.Material = Enum.Material.Neon
+
+local texture = Instance.new("Texture")
+texture.Parent = VisualP
+texture.Texture = 6196053948
+texture.Color3 = Color3.fromRGB(0, 0, 127)
+texture.Face = "Front"
+
+local texture2 = Instance.new("Texture")
+texture2.Parent = VisualP
+texture2.Texture = 6196053948
+texture2.Color3 = Color3.fromRGB(0, 0, 127)
+texture2.Face = "Back"
+
+local texture3 = Instance.new("Texture")
+texture3.Parent = VisualP
+texture3.Texture = 6196053948
+texture3.Color3 = Color3.fromRGB(0, 0, 127)
+texture3.Face = "Left"
+
+local texture4 = Instance.new("Texture")
+texture4.Parent = VisualP
+texture4.Texture = 6196053948
+texture4.Color3 = Color3.fromRGB(0, 0, 127)
+texture4.Face = "Right"
+
+local texture5 = Instance.new("Texture")
+texture5.Parent = VisualP
+texture5.Texture = 6196053948
+texture5.Color3 = Color3.fromRGB(0, 0, 127)
+texture5.Face = "Top"
+
+local texture6 = Instance.new("Texture")
+texture6.Parent = VisualP
+texture6.Texture = 6196053948
+texture6.Color3 = Color3.fromRGB(0, 0, 127)
+texture6.Face = "Bottom"
 
 
 local Window = Rayfield:CreateWindow({
@@ -156,7 +109,10 @@ local Window = Rayfield:CreateWindow({
 })
 
 
+
 local MainTab = Window:CreateTab("Main", nil) -- Title, Image
+
+
 
 local ReachSection = MainTab:CreateSection("Reach")
 
@@ -165,34 +121,43 @@ local ReachToggle = MainTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(ReachValue)
-		getgenv().ReachToggle = ReachValue
-		Select()
+		Settings.Toggle = ReachValue
 	end,
 })
 
+
+
+
+
+
 local Dropdown = MainTab:CreateDropdown({
 	Name = "Reach Type",
-	Options = {"FireTouchInterest","C-Bring"},
+	Options = { "FireTouchInterest", "C-Bring" },
 	CurrentOption = {"FireTouchInterest"},
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Options)
-		getgenv().SelectedOption = Options
-		Select()
+	Callback = function(ReachOption)
+		Settings.ReachT = ReachOption
 	end,
 })
+
+
+
+
 
 local ReachSlider = MainTab:CreateSlider({
 	Name = "Range",
 	Range = {1, 20},
-	Increment = 1,
+	Increment = 0.1,
 	Suffix = "Radius",
-	CurrentValue = 10,
+	CurrentValue = 6,
 	Flag = "RangeSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(RangeValue)
-		getgenv().range = RangeValue
+		Settings.Range = RangeValue
 	end,
 })
+
+
 
 
 
@@ -203,9 +168,11 @@ local VisualToggle = MainTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(VisualValue)
-		getgenv().VisualToggle = VisualValue
+		Settings.Visualizer = VisualValue
 	end,
 })
+
+
 
 
 
@@ -215,21 +182,156 @@ local DamageToggle = MainTab:CreateToggle({
 	Name = "Damage",
 	CurrentValue = false,
 	Flag = "DamageToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Value)
-		-- The function that takes place when the toggle is pressed
-		-- The variable (Value) is a boolean on whether the toggle is true or false
+	Callback = function(DamageToggle1)
+		Settings.Amplify = DamageToggle1
 	end,
 })
 
+
+
+
+
+
 local DamageSlider = MainTab:CreateSlider({
-	Name = "DamageX",
-	Range = {1.0, 2.0},
-	Increment = 0.1,
+	Name = "Damage",
+	Range = {1, 2},
+	Increment = 1,
 	Suffix = "X",
-	CurrentValue = 1.0,
+	CurrentValue = 1,
 	Flag = "DamageSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(Value)
-		-- The function that takes place when the slider changes
-		-- The variable (Value) is a number which correlates to the value the slider is currently at
+	Callback = function(DamageValue)
+		Settings.Damage = DamageValue
 	end,
 })
+
+
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+local player = Players.LocalPlayer
+
+
+RunService.Stepped:Connect(function()
+
+	if Settings.Toggle then
+
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+
+				local qChar = p.Character
+				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+				local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
+
+				local Char = player.Character
+				local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+				local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+				if HM and qHM then
+					if HM.Health > 0 and qHM.Health > 0 then
+
+
+						local limbs1 = {
+							RightArm = qChar:FindFirstChild("Right Arm") ,
+
+							LeftArm = qChar:FindFirstChild("Left Arm") ,
+
+							RightLeg = qChar:FindFirstChild("Right Leg") ,
+
+							LeftLeg = qChar:FindFirstChild("Left Leg") ,
+
+							Torso = qChar:FindFirstChild("Torso") ,
+
+							HumanoidRootPart = qChar:FindFirstChild("HumanoidRootPart") ,
+
+							Head = qChar:FindFirstChild("Head")
+						}
+						
+						
+						local limbs2 = {
+							
+							RightArm = qChar:FindFirstChild("Right Arm") ,
+
+							LeftArm = qChar:FindFirstChild("Left Arm") ,
+
+							RightLeg = qChar:FindFirstChild("Right Leg") ,
+
+							LeftLeg = qChar:FindFirstChild("Left Leg") 
+
+						}
+						
+
+						local tool = Char and Char:FindFirstChildOfClass("Tool")
+						local Handle = tool and tool:FindFirstChild("Handle")
+
+						if tool and Handle then
+
+							local Distance = (Handle.Position - qHRP.Position).Magnitude
+							if Distance <= Settings.Range then
+								
+								tool:Activate()
+								
+								
+								if Settings.ReachT == "FireTouchInterest" then
+									
+									local Qhrp = limbs1.HumanoidRootPart
+									firetouchinterest(Qhrp, Handle, 0)
+									firetouchinterest(Qhrp, Handle, 1)
+									
+								elseif Settings.ReachT == "C-Bring" then
+									
+									for _, limbs in ipairs(limbs2) do
+										if limbs then
+											limbs:BreakJoints()
+											limbs.CFrame = Handle.CFrame
+											limbs.Transparency = 0
+										end
+									end
+								end
+								
+								
+								if Settings.Amp then 
+									for _, limbs in ipairs(limbs1) do
+										if limbs then
+											for _ = 1, Settings.Damage do
+												firetouchinterest(limb, Handle, 0)
+												firetouchinterest(limb, Handle, 1)
+												firetouchinterest(limb, Handle, 0)
+											end
+										end
+									end
+								end
+								
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end)
+
+
+RunService.Stepped:Connect(function()
+	
+	local Character = player.Character
+
+	local Tool = Character and Character:FindFirstChildOfClass("Tool")
+	if not Tool then VisualP.Parent = nil end
+
+	if Tool then
+		local handle = Tool and Tool:FindFirstChild("Handle")
+		
+		if handle then
+			
+			if Settings.Visualizer then
+				VisualP.Parent = workspace
+				VisualP.Size = Vector3.new(Settings.Range, Settings.Range, Settings.Range)
+				VisualP.CFrame = handle.CFrame
+			else
+				VisualP.Parent = nil
+			end
+		end
+	end
+end)
