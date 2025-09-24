@@ -13,7 +13,7 @@ getgenv().Settings = {
 	
 	Toggle = nil ,
 	
-	ReachT = nil,
+	ReachT = nil ,
 
 	Range = nil , 
 
@@ -21,13 +21,15 @@ getgenv().Settings = {
 
 	Damage = nil , 
 	
-	Visualizer = nil ,
+	SwordVisualizer = nil ,
+	
+	SwordVisualColor = nil ,
 	
 	HitboxToggle = nil , 
 	
 	HitboxSize = nil , 
 	
-	HitboxVisual = nil,
+	HitboxVisual = nil ,
 	
 	HitBoxColor = nil
 	
@@ -38,46 +40,10 @@ local VisualP = Instance.new("Part")
 VisualP.Anchored = true
 VisualP.CanCollide = false
 VisualP.CastShadow = false
-VisualP.Color = Color3.fromRGB(0, 0, 0)
 VisualP.Transparency = 0.9
 VisualP.Material = Enum.Material.Neon
 VisualP.Shape = "Ball"
 
-local texture = Instance.new("Texture")
-texture.Parent = VisualP
-texture.Texture = 6196053948
-texture.Color3 = Color3.fromRGB(0, 0, 127)
-texture.Face = "Front"
-
-local texture2 = Instance.new("Texture")
-texture2.Parent = VisualP
-texture2.Texture = 6196053948
-texture2.Color3 = Color3.fromRGB(0, 0, 127)
-texture2.Face = "Back"
-
-local texture3 = Instance.new("Texture")
-texture3.Parent = VisualP
-texture3.Texture = 6196053948
-texture3.Color3 = Color3.fromRGB(0, 0, 127)
-texture3.Face = "Left"
-
-local texture4 = Instance.new("Texture")
-texture4.Parent = VisualP
-texture4.Texture = 6196053948
-texture4.Color3 = Color3.fromRGB(0, 0, 127)
-texture4.Face = "Right"
-
-local texture5 = Instance.new("Texture")
-texture5.Parent = VisualP
-texture5.Texture = 6196053948
-texture5.Color3 = Color3.fromRGB(0, 0, 127)
-texture5.Face = "Top"
-
-local texture6 = Instance.new("Texture")
-texture6.Parent = VisualP
-texture6.Texture = 6196053948
-texture6.Color3 = Color3.fromRGB(0, 0, 127)
-texture6.Face = "Bottom"
 
 
 local Window = Rayfield:CreateWindow({
@@ -171,8 +137,17 @@ local VisualToggle = MainTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(VisualValue)
-		Settings.Visualizer = VisualValue
+		Settings.SwordVisualizer = VisualValue
 	end,
+})
+
+local SwordColorPicker = MainTab:CreateColorPicker({
+	Name = "Color",
+	Color = Color3.fromRGB(0, 0, 0),
+	Flag = "SwordColorPicker", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(SwordVisualColorValue)
+		Settings.SwordVisualColor = SwordVisualColorValue
+	end
 })
 
 
@@ -314,34 +289,133 @@ RunService.Stepped:Connect(function()
 							local Distance = (Handle.Position - qHRP.Position).Magnitude
 							if Distance <= Settings.Range then
 								
-								tool:Activate()
-								
 								
 								if Settings.ReachT == "FireTouchInterest" then
 									
 									local Qhrp = limbs1.HumanoidRootPart
-									firetouchinterest(Qhrp, Handle, 0)
-									firetouchinterest(Qhrp, Handle, 1)
+									firetouchinterest(Qhrp, Handle, true)
+									firetouchinterest(Qhrp, Handle, false)
+									
 									
 								elseif Settings.ReachT == "C-Bring" then
 									
-									for _, limbs in ipairs(limbs2) do
-										if limbs then
-											limbs:BreakJoints()
-											limbs.CFrame = Handle.CFrame
-											limbs.Transparency = 0
+									for _, limb in ipairs(limbs2) do
+										if limb then
+											limb:BreakJoints()
+											limb.CFrame = Handle.CFrame
+											limb.Anchored = true
+											limb.Transparency = 1
 										end
 									end
 								end
 								
-								
-								if Settings.Amp then 
-									for _, limbs in ipairs(limbs1) do
-										if limbs then
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end)
+
+
+
+local function Whitelist()
+	
+	local WLD = {}
+	
+	for _, p in pairs(Players:GetPlayers()) do
+		if p.Name ~= player.Name then
+			
+			local qchar = p.Character
+			
+			if qchar then
+				
+				for _, dta in pairs(qchar:GetChildren()) do
+					if dta:IsA("BasePart") then
+						
+						table.insert(WLD, dta)
+					end
+				end
+			end
+		end
+	end
+	
+	return WLD
+end
+
+
+
+RunService.Stepped:Connect(function()
+	
+	if Settings.Amp then
+		
+		if Settings.Toggle then
+			
+			for _, p in pairs(Players:GetPlayers()) do
+				if p.Name ~= player.Name then
+
+					local qChar = p.Character
+					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
+
+					local Char = player.Character
+					local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+					local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+					if HM and qHM then
+						if HM.Health > 0 and qHM.Health > 0 then
+
+							local tool = Char and Char:FindFirstChildOfClass("Tool")
+							local Handle = tool and tool:FindFirstChild("Handle")
+
+							if tool and Handle then
+
+								local Distance = (Handle.Position - qHRP.Position).Magnitude
+								if Distance <= Settings.Range then
+									
+									for _, Child in pairs(qChar:GetChildren()) do
+										for _ = 1, Settings.Damage do
+											if Child:IsA("BasePart") then
+												firetouchinterest(Child, Handle, true)
+												firetouchinterest(Child, Handle, false)
+												firetouchinterest(Child, Handle, true)
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		else
+			for _, p in pairs(Players:GetPlayers()) do
+				if p.Name ~= player.Name then
+
+					local qChar = p.Character
+					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
+
+					local Char = player.Character
+					local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+					if HM and qHM then
+						if HM.Health > 0 and qHM.Health > 0 then
+
+							local tool = Char and Char:FindFirstChildOfClass("Tool")
+							local Handle = tool and tool:FindFirstChild("Handle")
+
+							if tool and Handle then
+					
+								for _, hit in pairs(Handle:GetTouchingParts()) do
+									if hit == Whitelist() then
+										
+										for _, Child in pairs(qChar:GetChildren()) do
 											for _ = 1, Settings.Damage do
-												firetouchinterest(limb, Handle, 0)
-												firetouchinterest(limb, Handle, 1)
-												firetouchinterest(limb, Handle, 0)
+												if Child:IsA("BasePart") then
+													firetouchinterest(Child, Handle, true)
+													firetouchinterest(Child, Handle, false)
+												end
 											end
 										end
 									end
@@ -374,6 +448,7 @@ RunService.Stepped:Connect(function()
 				VisualP.Parent = workspace
 				VisualP.Size = Vector3.new(Settings.Range, Settings.Range, Settings.Range)
 				VisualP.CFrame = handle.CFrame
+				VisualP.Color = Settings.SwordVisualColor
 			else
 				VisualP.Parent = nil
 			end
@@ -387,48 +462,74 @@ RunService.Stepped:Connect(function()
 	if Settings.HitboxToggle then
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
-				pcall(function()
+				--pcall(function()
 
 					local qChar = p.Character
 					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
 
 					qHRP.Size = Vector3.new(Settings.HitboxSize, Settings.HitboxSize, Settings.HitboxSize)
 
-					qHRP.Color = Settings.HitBoxColor
-
 					qHRP.CanCollide = false
 					
-					if Settings.HitboxVisual then
-						qHRP.Transparency = 0.9
-						
-					else
-						qHRP.Transparency = 1
-					end
-				end)
+				--end)
 			end
 		end
 	else
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
-				pcall(function()
+				--pcall(function()
 
 					local qChar = p.Character
 					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
 
 					qHRP.Size = Vector3.new(2, 2, 1)
 
-					qHRP.Color = Color3.new(163, 162, 165)
-
 					qHRP.CanCollide = false
 
-					if Settings.HitboxVisual then
-						qHRP.Transparency = 0
-						
-					else
-						qHRP.Transparency = 1
-					end
-				end)
+				--end)
 			end
 		end
 	end
+end)
+
+
+RunService.Stepped:Connect(function()
+	
+	if Settings.HitboxVisual then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+				
+				local qChar = p.Character
+				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+				
+				qHRP.Transparency = 0.7
+				
+			end
+		end
+		
+	else
+		
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+
+				local qChar = p.Character
+				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+
+				qHRP.Transparency = 1
+
+			end
+		end
+	end
+	
+	for _, p in pairs(Players:GetPlayers()) do
+		if p.Name ~= player.Name then
+
+			local qChar = p.Character
+			local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+
+			qHRP.Color = Settings.HitboxColor
+
+		end
+	end
+	
 end)
