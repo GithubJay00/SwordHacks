@@ -521,6 +521,9 @@ RunService.Stepped:Connect(function()
 		end
 	end
 	
+end)
+
+RunService.RenderStepped:Connect(function()
 	for _, p in pairs(Players:GetPlayers()) do
 		if p.Name ~= player.Name then
 
@@ -531,5 +534,4 @@ RunService.Stepped:Connect(function()
 
 		end
 	end
-	
 end)
