@@ -457,7 +457,7 @@ RunService.Stepped:Connect(function()
 
 			if handle then
 
-				if Settings.Visualizer then
+				if Settings.ReachToggleVisualizer then
 					VisualP.Parent = workspace
 					VisualP.Size = Vector3.new(Settings.Range, Settings.Range, Settings.Range)
 					VisualP.CFrame = handle.CFrame
@@ -470,7 +470,9 @@ RunService.Stepped:Connect(function()
 end)
 
 RunService.RenderStepped:Connect(function()
-	VisualP.Color = Settings.SwordVisualColor
+	if VisualP then
+		VisualP.Color = Settings.SwordVisualColor
+	end
 end)
 
 
@@ -480,7 +482,7 @@ RunService.Stepped:Connect(function()
 	if Settings.HitboxToggle then
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
-				--pcall(function()
+				pcall(function()
 
 					local qChar = p.Character
 					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
@@ -489,13 +491,13 @@ RunService.Stepped:Connect(function()
 
 					qHRP.CanCollide = false
 					
-				--end)
+				end)
 			end
 		end
 	else
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
-				--pcall(function()
+				pcall(function()
 
 					local qChar = p.Character
 					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
@@ -504,7 +506,7 @@ RunService.Stepped:Connect(function()
 
 					qHRP.CanCollide = false
 
-				--end)
+				end)
 			end
 		end
 	end
@@ -516,12 +518,12 @@ RunService.Stepped:Connect(function()
 	if Settings.HitboxVisual then
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
-				
-				local qChar = p.Character
-				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
-				
-				qHRP.Transparency = 0.7
-				
+				pcall(function()
+					local qChar = p.Character
+					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
+
+					qHRP.Transparency = 0.7
+				end)
 			end
 		end
 		
@@ -529,12 +531,12 @@ RunService.Stepped:Connect(function()
 		
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
+				pcall(function()
+					local qChar = p.Character
+					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
 
-				local qChar = p.Character
-				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
-
-				qHRP.Transparency = 1
-
+					qHRP.Transparency = 1
+				end)
 			end
 		end
 	end
@@ -544,12 +546,12 @@ end)
 RunService.RenderStepped:Connect(function()
 	for _, p in pairs(Players:GetPlayers()) do
 		if p.Name ~= player.Name then
+			pcall(function()
+				local qChar = p.Character
+				local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
 
-			local qChar = p.Character
-			local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
-
-			qHRP.Color = Settings.HitboxColor
-
+				qHRP.Color = Settings.HitboxColor
+			end)
 		end
 	end
 end)
