@@ -304,8 +304,8 @@ RunService.Stepped:Connect(function()
 								if Settings.ReachType == "FireTouchInterest" then
 									
 									local Qhrp = limbs1.HumanoidRootPart
-									firetouchinterest(Qhrp, Handle, true)
-									firetouchinterest(Qhrp, Handle, false)
+									firetouchinterest(Qhrp, Handle, 0)
+									firetouchinterest(Qhrp, Handle, 1)
 									
 									
 								elseif Settings.ReachType == "C-Bring" then
@@ -388,9 +388,9 @@ RunService.Stepped:Connect(function()
 									for _, Child in pairs(qChar:GetChildren()) do
 										for _ = 1, Settings.Damage do
 											if Child:IsA("BasePart") then
-												firetouchinterest(Child, Handle, true)
-												firetouchinterest(Child, Handle, false)
-												firetouchinterest(Child, Handle, true)
+												firetouchinterest(Child, Handle, 0)
+												firetouchinterest(Child, Handle, 1)
+												firetouchinterest(Child, Handle, 0)
 											end
 										end
 									end
@@ -424,8 +424,8 @@ RunService.Stepped:Connect(function()
 										for _, Child in pairs(qChar:GetChildren()) do
 											for _ = 1, Settings.Damage do
 												if Child:IsA("BasePart") then
-													firetouchinterest(Child, Handle, true)
-													firetouchinterest(Child, Handle, false)
+													firetouchinterest(Child, Handle, 0)
+													firetouchinterest(Child, Handle, 1)
 												end
 											end
 										end
