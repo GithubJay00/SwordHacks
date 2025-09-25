@@ -1,12 +1,14 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 
+
 if game.GameId == 6361937392 then
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("Superman").Parent = nil
 	game:GetService("ReplicatedFirst"):FindFirstChild("Prod"):FindFirstChild("Stats").Parent = nil
 	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("UIScaleHandler").Parent = nil
 end
+
 
 
 getgenv().Settings = {
@@ -36,6 +38,7 @@ getgenv().Settings = {
 }
 
 
+
 local VisualP = Instance.new("Part")
 VisualP.Anchored = true
 VisualP.CanCollide = false
@@ -43,6 +46,7 @@ VisualP.CastShadow = false
 VisualP.Transparency = 0.9
 VisualP.Material = Enum.Material.Neon
 VisualP.Shape = "Ball"
+
 
 
 
@@ -85,9 +89,8 @@ local Window = Rayfield:CreateWindow({
 
 
 
+
 local MainTab = Window:CreateTab("Main", nil) -- Title, Image
-
-
 
 
 local ReachSection = MainTab:CreateSection("Reach")
@@ -102,7 +105,7 @@ local ReachToggle = MainTab:CreateToggle({
 })
 
 
-local Dropdown = MainTab:CreateDropdown({
+local ReachDropdown = MainTab:CreateDropdown({
 	Name = "Reach Type",
 	Options = { "FireTouchInterest", "C-Bring" },
 	CurrentOption = {"FireTouchInterest"},
@@ -127,12 +130,7 @@ local ReachSlider = MainTab:CreateSlider({
 })
 
 
-
-
-
-local VisualSection = MainTab:CreateSection("Visuals")
-
-local VisualToggle = MainTab:CreateToggle({
+local ReachVisualToggle = MainTab:CreateToggle({
 	Name = "Reach Visualizer",
 	CurrentValue = false,
 	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
@@ -141,7 +139,8 @@ local VisualToggle = MainTab:CreateToggle({
 	end,
 })
 
-local SwordColorPicker = MainTab:CreateColorPicker({
+
+local ReachColorPicker = MainTab:CreateColorPicker({
 	Name = "Color",
 	Color = Color3.fromRGB(0, 0, 0),
 	Flag = "SwordColorPicker", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
@@ -149,6 +148,8 @@ local SwordColorPicker = MainTab:CreateColorPicker({
 		Settings.SwordVisualColor = SwordVisualColorValue
 	end
 })
+
+
 
 
 
@@ -177,6 +178,10 @@ local DamageSlider = MainTab:CreateSlider({
 		Settings.Damage = DamageValue
 	end,
 })
+
+
+
+
 
 
 
@@ -222,6 +227,9 @@ local HtiboxColorPicker = MainTab:CreateColorPicker({
 		Settings.HitboxColor = HitbotColor
 	end
 })
+
+
+
 
 
 
@@ -535,3 +543,13 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+
+
+
+local PlayerTab = Window:CreateTab("Player", nil) -- Title, Image
+
+
+local BotsSection = PlayerTab:CreateSection("AutoBots")
+
+
