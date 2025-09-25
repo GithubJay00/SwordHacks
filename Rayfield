@@ -1,7 +1,6 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 
-
 if game.GameId == 6361937392 then
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("Superman").Parent = nil
@@ -13,27 +12,31 @@ end
 
 getgenv().Settings = {
 	
-	Toggle = nil ,
+	ReachToggle = nil ,
 	
-	ReachT = nil ,
+	ReachType = nil ,
 
-	Range = nil , 
-
-	Amplify = nil , 
-
-	Damage = nil , 
+	Range = 6 ,
 	
-	SwordVisualizer = nil ,
+	ReachToggleVisualizer = nil ,
 	
-	SwordVisualColor = nil ,
+	SwordVisualColor = Color3.fromRGB(0, 0, 0) ,
+	
+	
+
+	AmpToggle = nil , 
+
+	Damage = 2 , 
+	
+	
 	
 	HitboxToggle = nil , 
 	
-	HitboxSize = nil , 
+	HitboxSize = 5.5 , 
 	
 	HitboxVisual = nil ,
 	
-	HitBoxColor = nil
+	HitboxColor = Color3.fromRGB(0, 0, 0)
 	
 }
 
@@ -95,12 +98,12 @@ local MainTab = Window:CreateTab("Main", nil) -- Title, Image
 
 local ReachSection = MainTab:CreateSection("Reach")
 
-local ReachToggle = MainTab:CreateToggle({
+local ReachToggleButton = MainTab:CreateToggle({
 	Name = "Reach",
 	CurrentValue = false,
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(ReachValue)
-		Settings.Toggle = ReachValue
+	Callback = function(ReachToggleValue)
+		Settings.ReachToggle = ReachToggleValue
 	end,
 })
 
@@ -112,7 +115,7 @@ local ReachDropdown = MainTab:CreateDropdown({
 	MultipleOptions = false,
 	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(ReachOption)
-		Settings.ReachT = ReachOption
+		Settings.ReachType = ReachOption
 	end,
 })
 
@@ -135,7 +138,7 @@ local ReachVisualToggle = MainTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "VisualToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(VisualValue)
-		Settings.SwordVisualizer = VisualValue
+		Settings.ReachToggleVisualizer = VisualValue
 	end,
 })
 
@@ -143,7 +146,7 @@ local ReachVisualToggle = MainTab:CreateToggle({
 local ReachColorPicker = MainTab:CreateColorPicker({
 	Name = "Color",
 	Color = Color3.fromRGB(0, 0, 0),
-	Flag = "SwordColorPicker", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "SwordVisualColorPicker", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(SwordVisualColorValue)
 		Settings.SwordVisualColor = SwordVisualColorValue
 	end
@@ -157,22 +160,22 @@ local ReachColorPicker = MainTab:CreateColorPicker({
 
 local DamageSection = MainTab:CreateSection("Damage")
 
-local DamageToggle = MainTab:CreateToggle({
+local DamageToggleButton = MainTab:CreateToggle({
 	Name = "Damage",
 	CurrentValue = false,
 	Flag = "DamageToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(DamageToggle1)
-		Settings.Amplify = DamageToggle1
+	Callback = function(DamageToggleValue)
+		Settings.AmpToggle = DamageToggleValue
 	end,
 })
 
 
 local DamageSlider = MainTab:CreateSlider({
 	Name = "Damage Amount",
-	Range = {1, 2},
+	Range = {1, 4},
 	Increment = 1,
 	Suffix = "X",
-	CurrentValue = 1,
+	CurrentValue = 2,
 	Flag = "DamageSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(DamageValue)
 		Settings.Damage = DamageValue
@@ -187,7 +190,7 @@ local DamageSlider = MainTab:CreateSlider({
 
 local HitboxSection = MainTab:CreateSection("Hitbox")
 
-local HitboxToggle = MainTab:CreateToggle({
+local HitboxToggleButton = MainTab:CreateToggle({
 	Name = "Hitbox Toggle",
 	CurrentValue = false,
 	Flag = "HitboxToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
@@ -200,7 +203,7 @@ local HitboxToggle = MainTab:CreateToggle({
 local HitboxSlider = MainTab:CreateSlider({
 	Name = "Size",
 	Range = {1, 20},
-	Increment = 1,
+	Increment = 0.1,
 	Suffix = "Htibox",
 	CurrentValue = 5.5,
 	Flag = "HitboxSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
@@ -223,8 +226,8 @@ local HtiboxColorPicker = MainTab:CreateColorPicker({
 	Name = "Hitbox Color",
 	Color = Color3.fromRGB(0, 0, 0),
 	Flag = "HitboxColor1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(HitbotColor)
-		Settings.HitboxColor = HitbotColor
+	Callback = function(HitbotColorValue)
+		Settings.HitboxColor = HitbotColorValue
 	end
 })
 
@@ -242,7 +245,7 @@ local player = Players.LocalPlayer
 
 RunService.Stepped:Connect(function()
 
-	if Settings.Toggle then
+	if Settings.ReachToggle then
 
 		for _, p in pairs(Players:GetPlayers()) do
 			if p.Name ~= player.Name then
@@ -298,14 +301,14 @@ RunService.Stepped:Connect(function()
 							if Distance <= Settings.Range then
 								
 								
-								if Settings.ReachT == "FireTouchInterest" then
+								if Settings.ReachType == "FireTouchInterest" then
 									
 									local Qhrp = limbs1.HumanoidRootPart
 									firetouchinterest(Qhrp, Handle, true)
 									firetouchinterest(Qhrp, Handle, false)
 									
 									
-								elseif Settings.ReachT == "C-Bring" then
+								elseif Settings.ReachType == "C-Bring" then
 									
 									for _, limb in ipairs(limbs2) do
 										if limb then
@@ -356,9 +359,9 @@ end
 
 RunService.Stepped:Connect(function()
 	
-	if Settings.Amp then
+	if Settings.AmpToggle then
 		
-		if Settings.Toggle then
+		if Settings.ReachToggle then
 			
 			for _, p in pairs(Players:GetPlayers()) do
 				if p.Name ~= player.Name then
@@ -440,29 +443,36 @@ end)
 
 
 
+
 RunService.Stepped:Connect(function()
-	
-	local Character = player.Character
-
-	local Tool = Character and Character:FindFirstChildOfClass("Tool")
-	if not Tool then VisualP.Parent = nil end
-
-	if Tool then
-		local handle = Tool and Tool:FindFirstChild("Handle")
+	if Settings.ReachToggle then
 		
-		if handle then
-			
-			if Settings.Visualizer then
-				VisualP.Parent = workspace
-				VisualP.Size = Vector3.new(Settings.Range, Settings.Range, Settings.Range)
-				VisualP.CFrame = handle.CFrame
-				VisualP.Color = Settings.SwordVisualColor
-			else
-				VisualP.Parent = nil
+		local Character = player.Character
+
+		local Tool = Character and Character:FindFirstChildOfClass("Tool")
+		if not Tool then VisualP.Parent = nil end
+
+		if Tool then
+			local handle = Tool and Tool:FindFirstChild("Handle")
+
+			if handle then
+
+				if Settings.Visualizer then
+					VisualP.Parent = workspace
+					VisualP.Size = Vector3.new(Settings.Range, Settings.Range, Settings.Range)
+					VisualP.CFrame = handle.CFrame
+				else
+					VisualP.Parent = nil
+				end
 			end
 		end
 	end
 end)
+
+RunService.RenderStepped:Connect(function()
+	VisualP.Color = Settings.SwordVisualColor
+end)
+
 
 
 
