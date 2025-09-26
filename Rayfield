@@ -690,7 +690,7 @@ RunService.Heartbeat:Connect(function()
 						local Handle = tool and tool:FindFirstChild("Handle")
 
 						if tool and Handle then
-							local Distance = (Handle.Position - qHRP.Position).Magnitude
+							local Distance = (Handle.Position - pHRP.Position).Magnitude
 							if Distance <= Settings2.LungeBotRange then
 								tool:Activate()
 							end
@@ -705,7 +705,7 @@ end)
 
 
 
-local function LookAt()
+function LookAt()
 	local Char = player.Character
 
 	if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
