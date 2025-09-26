@@ -596,7 +596,7 @@ local LungeToggle = PlayerTab:CreateToggle({
 
 local LungeBotSlider = PlayerTab:CreateSlider({
 	Name = "Lunge Range",
-	Range = {1, 20},
+	Range = {1, 50},
 	Increment = 0.1,
 	Suffix = "Range",
 	CurrentValue = 5,
@@ -638,7 +638,7 @@ local AimbotPartDropDown = PlayerTab:CreateDropdown({
 
 local AimbotSlider = PlayerTab:CreateSlider({
 	Name = "Aimbot radius",
-	Range = {1, 20},
+	Range = {1, 50},
 	Increment = 0.1,
 	Suffix = "Distance",
 	CurrentValue = 5,
@@ -705,7 +705,7 @@ end)
 
 
 
-function LookAt()
+local LookAt = function()
 	local Char = player.Character
 
 	if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
