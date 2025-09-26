@@ -14,7 +14,7 @@ getgenv().Settings = {
 	
 	ReachToggle = nil ,
 	
-	ReachType = nil ,
+	ReachType = "FireTouchInterest" ,
 
 	Range = 6 ,
 	
@@ -559,9 +559,186 @@ end)
 
 
 
+
+
+getgenv().Settings2 = {
+	
+	LungeBotToggled = nil ,
+	LungeBotRange = 5 , 
+	
+	
+	AimbotToggled = nil , 
+	AimbotSliderValue = 5 ,
+	AimbotTargetPart = "Torso" ,
+	AimbotOffset = 0 ,
+	
+}
+
+
+
+
+
+
 local PlayerTab = Window:CreateTab("Player", nil) -- Title, Image
 
 
 local BotsSection = PlayerTab:CreateSection("AutoBots")
 
 
+local LungeToggle = PlayerTab:CreateToggle({
+	Name = "Lunge Bot",
+	CurrentValue = false,
+	Flag = "LungeBotToggle", 
+	Callback = function(LungeBotValue)
+		Settings2.LungeBotToggled = LungeBotValue
+	end,
+})
+
+local LungeBotSlider = PlayerTab:CreateSlider({
+	Name = "Lunge Range",
+	Range = {1, 20},
+	Increment = 0.1,
+	Suffix = "Range",
+	CurrentValue = 5,
+	Flag = "LungeBotSlider",
+	Callback = function(LungeBotSliderValue)
+		Settings2.LungeBotRange = LungeBotSliderValue
+	end,
+})
+
+
+
+
+
+
+
+
+
+local AimbotSection = PlayerTab:CreateSection("Aimbot")
+
+local AimbotToggle = PlayerTab:CreateToggle({
+	Name = "Aimbot",
+	CurrentValue = false,
+	Flag = "AimbotToggle",
+	Callback = function(AimbotToggleValue)
+		Settings2.AimbotToggled = AimbotToggleValue
+	end,
+})
+
+local AimbotPartDropDown = PlayerTab:CreateDropdown({
+	Name = "Target Part",
+	Options = { "Right Arm", "Torso", "Left Arm" },
+	CurrentOption = {"Torso"},
+	MultipleOptions = false,
+	Flag = "TPartDropdown", 
+	Callback = function(TargetPart)
+		Settings2.AimbotTargetPart = TargetPart
+	end,
+})
+
+local AimbotSlider = PlayerTab:CreateSlider({
+	Name = "Aimbot radius",
+	Range = {1, 20},
+	Increment = 0.1,
+	Suffix = "Distance",
+	CurrentValue = 5,
+	Flag = "AimbotSlider1", 
+	Callback = function(AimbotDistanceValue)
+		Settings2.AimbotSliderValue = AimbotDistanceValue
+	end,
+})
+
+local AimbotOffsetSlider = PlayerTab:CreateSlider({
+	Name = "Aimbot Offset",
+	Range = {0, 100},
+	Increment = 0.1,
+	Suffix = "Offset",
+	CurrentValue = 0,
+	Flag = "AimbotOffsetSlider", 
+	Callback = function(AimbotOffsetValue)
+		Settings2.AimbotOffset = AimbotOffsetValue
+	end,
+})
+
+
+
+
+
+
+
+
+
+
+
+RunService.Heartbeat:Connect(function()
+	if Settings2.LungeBotToggled then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
+				
+				local pChar = p.Character
+				local pHRP = pChar and pChar:FindFirstChild("HumanoidRootPart")
+				local pHM = pChar and pChar:FindFirstChildOfClass("Humanoid")
+
+				local Char = player.Character
+				local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+				local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+				if HM and pHM then
+					if HM.Health > 0 and pHM.Health > 0 then
+						
+						local tool = Char and Char:FindFirstChildOfClass("Tool")
+						local Handle = tool and tool:FindFirstChild("Handle")
+
+						if tool and Handle then
+							local Distance = (Handle.Position - qHRP.Position).Magnitude
+							if Distance <= Settings2.LungeBotRange then
+								tool:Activate()
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end)
+
+
+
+
+local function LookAt()
+	local Char = player.Character
+
+	if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
+
+
+	local Target = nil
+
+	for _, p in pairs(Players:GetPlayers()) do
+		if p.Name ~= player.Name then
+
+			local pChar = p.Character
+			local Distance = (Char:FindFirstChild("HumanoidRootPart").Position - pChar:FindFirstChild("HumanoidRootPart").Position).Magnitude
+
+			if Distance <= Settings2.AimbotSliderValue then
+				Settings2.AimbotSliderValue = Distance
+				Target = pChar:FindFirstChild(Settings2.AimbotTargetPart)
+			end
+		end
+	end
+
+
+	if Target then
+		local CharPos = Char:FindFirstChild("HumanoidRootPart").Position
+		local TargetPos = Target.Position
+		local Direction = Vector3.new(TargetPos.X, CharPos.Y, TargetPos.Z)
+		Char:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(CharPos, Direction + Vector3.new(Settings2.AimbotOffset, 0, 0))
+	end
+end
+
+
+
+RunService.Heartbeat:Connect(function()
+	if Settings2.AimbotToggled then
+		LookAt()
+	end
+end)
