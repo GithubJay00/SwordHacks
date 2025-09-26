@@ -714,7 +714,7 @@ local LookAt = function()
 	local Target = nil
 
 	for _, p in pairs(Players:GetPlayers()) do
-		if p.Name ~= player.Name then
+		if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid").Health ~= 0 then
 
 			local pChar = p.Character
 			local Distance = (Char:FindFirstChild("HumanoidRootPart").Position - pChar:FindFirstChild("HumanoidRootPart").Position).Magnitude
