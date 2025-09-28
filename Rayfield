@@ -63,7 +63,7 @@ local Window = Rayfield:CreateWindow({
 
 	ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
 
-	DisableRayfieldPrompts = false,
+	DisableRayfieldPrompts = true,
 	DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
 
 	ConfigurationSaving = {
@@ -426,6 +426,7 @@ RunService.Stepped:Connect(function()
 												if Child:IsA("BasePart") then
 													firetouchinterest(Child, Handle, 0)
 													firetouchinterest(Child, Handle, 1)
+													firetouchinterest(Child, Handle, 0)
 												end
 											end
 										end
@@ -572,6 +573,10 @@ getgenv().Settings2 = {
 	AimbotTargetPart = "Torso" ,
 	AimbotOffset = 0 ,
 	
+	
+	JumpbotToggle = nil , 
+	JumpbotRange = 5
+	
 }
 
 
@@ -582,8 +587,9 @@ getgenv().Settings2 = {
 local PlayerTab = Window:CreateTab("Player", nil) -- Title, Image
 
 
-local BotsSection = PlayerTab:CreateSection("AutoBots")
 
+
+local BotsSection = PlayerTab:CreateSection("AutoBots")
 
 local LungeToggle = PlayerTab:CreateToggle({
 	Name = "Lunge Bot",
@@ -596,7 +602,7 @@ local LungeToggle = PlayerTab:CreateToggle({
 
 local LungeBotSlider = PlayerTab:CreateSlider({
 	Name = "Lunge Range",
-	Range = {1, 50},
+	Range = {1, 100},
 	Increment = 0.1,
 	Suffix = "Range",
 	CurrentValue = 5,
@@ -609,6 +615,29 @@ local LungeBotSlider = PlayerTab:CreateSlider({
 
 
 
+
+local JumpBotSection = PlayerTab:CreateSection("JumpBot")
+
+local JumpBotToggleButton = PlayerTab:CreateToggle({
+	Name = "Jumpbot",
+	CurrentValue = false,
+	Flag = "JumpbotToggle1", 
+	Callback = function(JumpbotValue)
+		Settings2.JumpbotToggle
+	end,
+})
+
+local JumpBotSlider = PlayerTab:CreateSlider({
+	Name = "Jump Range",
+	Range = {1, 100},
+	Increment = 0.1,
+	Suffix = "Radius",
+	CurrentValue = 5,
+	Flag = "jumpbotSlider1", 
+	Callback = function(JumpbotSliderValue)
+		Settings2.JumpbotRange = JumpbotSliderValue
+	end,
+})
 
 
 
@@ -638,7 +667,7 @@ local AimbotPartDropDown = PlayerTab:CreateDropdown({
 
 local AimbotSlider = PlayerTab:CreateSlider({
 	Name = "Aimbot radius",
-	Range = {1, 50},
+	Range = {1, 100},
 	Increment = 0.1,
 	Suffix = "Distance",
 	CurrentValue = 5,
@@ -659,10 +688,6 @@ local AimbotOffsetSlider = PlayerTab:CreateSlider({
 		Settings2.AimbotOffset = AimbotOffsetValue
 	end,
 })
-
-
-
-
 
 
 
@@ -705,10 +730,11 @@ end)
 
 
 
+
 local LookAt = function()
 	local Char = player.Character
 
-	if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
+	--if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
 
 
 	local Target = nil
@@ -737,8 +763,48 @@ end
 
 
 
+
+
+local Jump = function()
+	for _, p in pairs(Players:GetPlayers()) do
+		if p.Name ~= player.Name then
+
+			local pChar = p.Character
+			local pHRP = pChar and pChar:FindFirstChild("HumanoidRootPart")
+			local pHM = pChar and pChar:FindFirstChildOfClass("Humanoid")
+
+			local Char = player.Character
+			local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+			local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+			
+			
+			local Distance = (HRP.Position - pHRP.Position).Magnitude
+			
+			if Distance <= Settings2.JumpbotRange then
+				if HM and pHM then
+					if HM.Health > 0 and pHM.Health > 0 and pHM.Jumping then
+						if HM then
+							HM.Jump = true
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+
+
+
 RunService.Heartbeat:Connect(function()
+	
 	if Settings2.AimbotToggled then
 		LookAt()
 	end
+	
+	if Settings2.JumpbotToggle then
+		Jump()
+	end
+	
 end)
+
