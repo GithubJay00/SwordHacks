@@ -1,12 +1,12 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 
-if game.PlaceId == 6361937392 then
+--[[if game.PlaceId == 6361937392 then
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("Superman").Parent = nil
 	game:GetService("ReplicatedFirst"):FindFirstChild("Prod"):FindFirstChild("Stats").Parent = nil
 	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("UIScaleHandler").Parent = nil
-end
+end]]
 
 
 
