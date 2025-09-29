@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 
 if game.PlaceId == 6361937392 then
@@ -381,7 +381,6 @@ local function Whitelist()
 			local qchar = p.Character
 			
 			if qchar then
-				
 				for _, dta in pairs(qchar:GetChildren()) do
 					if dta:IsA("BasePart") then
 						
@@ -391,7 +390,6 @@ local function Whitelist()
 			end
 		end
 	end
-	
 	return WLD
 end
 
@@ -457,10 +455,8 @@ RunService.Stepped:Connect(function()
 							local Handle = tool and tool:FindFirstChild("Handle")
 
 							if tool and Handle then
-					
 								for _, hit in pairs(Handle:GetTouchingParts()) do
 									if hit == Whitelist() then
-										
 										for _, Child in pairs(qChar:GetChildren()) do
 											for _ = 1, Settings.Damage do
 												if Child:IsA("BasePart") then
@@ -472,7 +468,6 @@ RunService.Stepped:Connect(function()
 										end
 									end
 								end
-								
 							end
 						end
 					end
@@ -481,6 +476,7 @@ RunService.Stepped:Connect(function()
 		end
 	end
 end)
+
 
 
 
@@ -519,6 +515,7 @@ end)
 
 
 
+
 RunService.Stepped:Connect(function()
 	if Settings.HitboxToggle then
 		for _, p in pairs(Players:GetPlayers()) do
@@ -552,6 +549,9 @@ RunService.Stepped:Connect(function()
 		end
 	end
 end)
+
+
+
 
 
 RunService.Stepped:Connect(function()
@@ -596,6 +596,9 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+
+
 
 
 
@@ -663,7 +666,7 @@ local JumpBotToggleButton = PlayerTab:CreateToggle({
 	CurrentValue = false,
 	Flag = "JumpbotToggle1", 
 	Callback = function(JumpbotValue)
-		Settings2.JumpbotToggle
+		Settings2.JumpbotToggle = JumpbotValue
 	end,
 })
 
@@ -771,81 +774,71 @@ end)
 
 
 
-local LookAt = function()
-	local Char = player.Character
+RunService.Stepped:Connect(function()
+	if Settings2.AimbotToggled then
+		
+		local Char = player.Character
 
-	--if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
+		--if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then return end
 
 
-	local Target = nil
+		local Target = nil
 
-	for _, p in pairs(Players:GetPlayers()) do
-		if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid").Health ~= 0 then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid").Health ~= 0 then
 
-			local pChar = p.Character
-			local Distance = (Char:FindFirstChild("HumanoidRootPart").Position - pChar:FindFirstChild("HumanoidRootPart").Position).Magnitude
+				local pChar = p.Character
+				local Distance = (Char:FindFirstChild("HumanoidRootPart").Position - pChar:FindFirstChild("HumanoidRootPart").Position).Magnitude
 
-			if Distance <= Settings2.AimbotSliderValue then
-				Settings2.AimbotSliderValue = Distance
-				Target = pChar:FindFirstChild(Settings2.AimbotTargetPart)
+				if Distance <= Settings2.AimbotSliderValue then
+					Settings2.AimbotSliderValue = Distance
+					Target = pChar:FindFirstChild(Settings2.AimbotTargetPart)
+				end
 			end
 		end
+
+
+		if Target then
+			local CharPos = Char:FindFirstChild("HumanoidRootPart").Position
+			local TargetPos = Target.Position
+			local Direction = Vector3.new(TargetPos.X, CharPos.Y, TargetPos.Z)
+			Char:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(CharPos, Direction + Vector3.new(Settings2.AimbotOffset, 0, 0))
+		end
 	end
-
-
-	if Target then
-		local CharPos = Char:FindFirstChild("HumanoidRootPart").Position
-		local TargetPos = Target.Position
-		local Direction = Vector3.new(TargetPos.X, CharPos.Y, TargetPos.Z)
-		Char:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(CharPos, Direction + Vector3.new(Settings2.AimbotOffset, 0, 0))
-	end
-end
+end)
 
 
 
 
 
-local Jump = function()
-	for _, p in pairs(Players:GetPlayers()) do
-		if p.Name ~= player.Name then
+RunService.Stepped:Connect(function()
+	if Settings2.JumpbotToggle then
+		for _, p in pairs(Players:GetPlayers()) do
+			if p.Name ~= player.Name then
 
-			local pChar = p.Character
-			local pHRP = pChar and pChar:FindFirstChild("HumanoidRootPart")
-			local pHM = pChar and pChar:FindFirstChildOfClass("Humanoid")
+				local pChar = p.Character
+				local pHRP = pChar and pChar:FindFirstChild("HumanoidRootPart")
+				local pHM = pChar and pChar:FindFirstChildOfClass("Humanoid")
 
-			local Char = player.Character
-			local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
-			local HM = Char and Char:FindFirstChildOfClass("Humanoid")
-			
-			
-			local Distance = (HRP.Position - pHRP.Position).Magnitude
-			
-			if Distance <= Settings2.JumpbotRange then
-				if HM and pHM then
-					if HM.Health > 0 and pHM.Health > 0 and pHM.Jumping then
-						if HM then
-							HM.Jump = true
+				local Char = player.Character
+				local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
+				local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+
+				local Distance = (HRP.Position - pHRP.Position).Magnitude
+
+				if Distance <= Settings2.JumpbotRange then
+					if HM and pHM then
+						if HM.Health > 0 and pHM.Health > 0 and pHM.Jumping then
+							if HM then
+								HM.Jump = true
+							end
 						end
 					end
 				end
 			end
 		end
 	end
-end
-
-
-
-
-RunService.Heartbeat:Connect(function()
-	
-	if Settings2.AimbotToggled then
-		LookAt()
-	end
-	
-	if Settings2.JumpbotToggle then
-		Jump()
-	end
-	
 end)
 
 
@@ -862,8 +855,6 @@ getgenv().Settings3 = {
 	guiToggle = nil
 	
 }
-
-
 
 
 
@@ -908,7 +899,6 @@ RunService.RenderStepped:Connect(function()
 			end
 		end
 	else
-		
 		if game.PlaceId == 6361937392 then
 			for _, GUI in pairs(Menus:GetChildren()) do
 				if GUI.Name == "Store" or "Quests" or "Inventory" or "Index" or "BulkRewards" or "Marketplace" or "Arcade" or "Clans" or "UpdateLog" then
@@ -919,5 +909,4 @@ RunService.RenderStepped:Connect(function()
 			end
 		end
 	end
-	
 end)
