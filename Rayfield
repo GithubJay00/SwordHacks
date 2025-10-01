@@ -2,10 +2,20 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 
 if game.PlaceId == 6361937392 then
-	local ReplicatedStorage = game:GetService("ReplicatedStorage")
-	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("Superman").Parent = nil
-	game:GetService("ReplicatedFirst"):FindFirstChild("Prod"):FindFirstChild("Stats").Parent = nil
-	game:GetService("ReplicatedFirst"):FindFirstChild("Static"):FindFirstChild("UIScaleHandler").Parent = nil
+	
+	print("Bypass working")
+	
+	local ReplicatedFirst = game:GetService("ReplicatedFirst")
+	
+	local sm = ReplicatedFirst:FindFirstChild("Static"):FindFirstChild("Superman")
+	local Stats1 = ReplicatedFirst:FindFirstChild("Prod"):FindFirstChild("Stats")
+	local SH = ReplicatedFirst:FindFirstChild("Static"):FindFirstChild("UIScaleHandler")
+	
+	if sm and Stats1 and SH then
+		sm.Parent = nil
+		Stats1.Parent = nil
+		SH.Parent = nil
+	end
 end
 
 
@@ -13,8 +23,6 @@ end
 getgenv().Settings = {
 	
 	ReachToggle = nil ,
-	
-	ReachType = "FireTouchInterest" ,
 
 	Range = 6 ,
 	
@@ -54,10 +62,10 @@ VisualP.Shape = "Ball"
 
 
 local Window = Rayfield:CreateWindow({
-	Name = "SwordHacks",
+	Name = "SwordCloset",
 	Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-	LoadingTitle = "SwordHacks",
-	LoadingSubtitle = "by aaa000798",
+	LoadingTitle = "SCWare",
+	LoadingSubtitle = "aaa000798 DC",
 	ShowText = " ", -- for mobile users to unhide rayfield, change if you'd like
 	Theme = {
 		TextColor = Color3.fromRGB(240, 240, 240),
@@ -113,8 +121,8 @@ local Window = Rayfield:CreateWindow({
 	},
 
 	Discord = {
-		Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-		Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+		Enabled = true, -- Prompt the user to join your Discord server if their executor supports it
+		Invite = "NAtNjfvjtr", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
 		RememberJoins = true -- Set this to false to make them join the discord every time they load it up
 	},
 
@@ -144,18 +152,6 @@ local ReachToggleButton = MainTab:CreateToggle({
 	Flag = "ReachToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(ReachToggleValue)
 		Settings.ReachToggle = ReachToggleValue
-	end,
-})
-
-
-local ReachDropdown = MainTab:CreateDropdown({
-	Name = "Reach Type",
-	Options = { "FireTouchInterest", "C-Bring" },
-	CurrentOption = {"FireTouchInterest"},
-	MultipleOptions = false,
-	Flag = "ReachSelect", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(ReachOption)
-		Settings.ReachType = ReachOption
 	end,
 })
 
@@ -318,19 +314,6 @@ RunService.Stepped:Connect(function()
 							Head = qChar:FindFirstChild("Head")
 						}
 						
-						
-						local limbs2 = {
-							
-							RightArm = qChar:FindFirstChild("Right Arm") ,
-
-							LeftArm = qChar:FindFirstChild("Left Arm") ,
-
-							RightLeg = qChar:FindFirstChild("Right Leg") ,
-
-							LeftLeg = qChar:FindFirstChild("Left Leg") 
-
-						}
-						
 
 						local tool = Char and Char:FindFirstChildOfClass("Tool")
 						local Handle = tool and tool:FindFirstChild("Handle")
@@ -340,26 +323,22 @@ RunService.Stepped:Connect(function()
 							local Distance = (Handle.Position - qHRP.Position).Magnitude
 							if Distance <= Settings.Range then
 								
-								
-								if Settings.ReachType == "FireTouchInterest" then
-									
+								if Settings.AmpToggle then
+									for _, Child in pairs(qChar:GetChildren()) do
+										for _ = 1, Settings.Damage do
+											if Child:IsA("BasePart") then
+												firetouchinterest(Child, Handle, 0)
+												firetouchinterest(Child, Handle, 1)
+												firetouchinterest(Child, Handle, 0)
+											end
+										end
+									end
+								else
 									local Qhrp = limbs1.HumanoidRootPart
 									firetouchinterest(Qhrp, Handle, 0)
 									firetouchinterest(Qhrp, Handle, 1)
-									
-									
-								elseif Settings.ReachType == "C-Bring" then
-									
-									for _, limb in ipairs(limbs2) do
-										if limb then
-											limb:BreakJoints()
-											limb.CFrame = Handle.CFrame
-											limb.Anchored = true
-											limb.Transparency = 1
-										end
-									end
 								end
-								
+				
 							end
 						end
 					end
@@ -398,51 +377,13 @@ end
 RunService.Stepped:Connect(function()
 	
 	if Settings.AmpToggle then
-		
-		if Settings.ReachToggle then
+		if not Settings.ReachToggle then
+			
 			
 			for _, p in pairs(Players:GetPlayers()) do
 				if p.Name ~= player.Name then
 
 					local qChar = p.Character
-					local qHRP = qChar and qChar:FindFirstChild("HumanoidRootPart")
-					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
-
-					local Char = player.Character
-					local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
-					local HM = Char and Char:FindFirstChildOfClass("Humanoid")
-
-					if HM and qHM then
-						if HM.Health > 0 and qHM.Health > 0 then
-
-							local tool = Char and Char:FindFirstChildOfClass("Tool")
-							local Handle = tool and tool:FindFirstChild("Handle")
-
-							if tool and Handle then
-
-								local Distance = (Handle.Position - qHRP.Position).Magnitude
-								if Distance <= Settings.Range then
-									
-									for _, Child in pairs(qChar:GetChildren()) do
-										for _ = 1, Settings.Damage do
-											if Child:IsA("BasePart") then
-												firetouchinterest(Child, Handle, 0)
-												firetouchinterest(Child, Handle, 1)
-												firetouchinterest(Child, Handle, 0)
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		else
-			for _, p in pairs(Players:GetPlayers()) do
-				if p.Name ~= player.Name then
-
-					local qChar = p.Character
 					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
 
 					local Char = player.Character
@@ -455,6 +396,7 @@ RunService.Stepped:Connect(function()
 							local Handle = tool and tool:FindFirstChild("Handle")
 
 							if tool and Handle then
+								
 								for _, hit in pairs(Handle:GetTouchingParts()) do
 									if hit == Whitelist() then
 										for _, Child in pairs(qChar:GetChildren()) do
@@ -473,6 +415,7 @@ RunService.Stepped:Connect(function()
 					end
 				end
 			end
+			
 		end
 	end
 end)
