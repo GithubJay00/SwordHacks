@@ -218,7 +218,7 @@ local DamageSlider = MainTab:CreateSlider({
 	Name = "Damage Amount",
 	Range = {1, 10},
 	Increment = 1,
-	Suffix = "(Lower = More DMG)",
+	Suffix = "  (Lower = DMG)",
 	CurrentValue = 2,
 	Flag = "DamageSlider", 
 	Callback = function(DamageValue)
@@ -401,7 +401,7 @@ RunService.Stepped:Connect(function()
 							if tool and Handle then
 								
 								if Settings.AmpMode == "Legit" then
-									
+									print("legit amp mode")
 									for _, hit in pairs(Handle:GetTouchingParts()) do
 										if hit == Whitelist() then
 											for _, Child in pairs(qChar:GetChildren()) do
@@ -417,7 +417,7 @@ RunService.Stepped:Connect(function()
 									end
 									
 								elseif Settings.AmpMode == "Blatant" then
-									
+									print("Blatant amp mode")
 									for _, hit in pairs(Handle:GetTouchingParts()) do
 										if hit:IsA("BasePart") then
 											if hit.Parent ~= Char then
@@ -717,7 +717,9 @@ RunService.Stepped:Connect(function()
 						if tool and Handle then
 							local Distance = (Handle.Position - pHRP.Position).Magnitude
 							if Distance <= Settings2.LungeBotRange then
-								tool:Activate()
+								pcall(function()
+									tool:Activate()
+								end)
 							end
 						end
 					end
@@ -740,7 +742,7 @@ RunService.Stepped:Connect(function()
 		local Target = nil
 		local Radius = Settings2.AimbotSliderValue
 
-		for _, p in pairs(Players:GetPlayers()) do
+		for _, p in ipairs(Players:GetPlayers()) do
 			if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid").Health ~= 0 then
 
 				local pChar = p.Character
