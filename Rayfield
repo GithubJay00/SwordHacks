@@ -3,8 +3,6 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 if game.PlaceId == 6361937392 then
 	
-	print("Bypass working")
-	
 	local ReplicatedFirst = game:GetService("ReplicatedFirst")
 	
 	local sm = ReplicatedFirst:FindFirstChild("Static"):FindFirstChild("Superman")
@@ -350,7 +348,7 @@ end)
 
 
 
-local function Whitelist()
+--[[local function Whitelist()
 	
 	local WLD = {}
 	
@@ -370,11 +368,11 @@ local function Whitelist()
 		end
 	end
 	return WLD
-end
+end]]
 
 
 
-RunService.Stepped:Connect(function()
+--[[RunService.Stepped:Connect(function()
 	
 	if Settings.AmpToggle then
 		if not Settings.ReachToggle then
@@ -418,7 +416,58 @@ RunService.Stepped:Connect(function()
 			
 		end
 	end
+end)]]
+
+
+
+
+
+RunService.Stepped:Connect(function() -- amp V2
+
+	if Settings.AmpToggle then
+		if not Settings.ReachToggle then
+
+			for _, p in pairs(Players:GetPlayers()) do
+				if p.Name ~= player.Name then
+
+					local qChar = p.Character
+					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
+
+					local Char = player.Character
+					local HM = Char and Char:FindFirstChildOfClass("Humanoid")
+
+					if HM and qHM then
+						if HM.Health > 0 and qHM.Health > 0 then
+
+							local tool = Char and Char:FindFirstChildOfClass("Tool")
+							local Handle = tool and tool:FindFirstChild("Handle")
+
+							if tool and Handle then
+
+								for _, hit in pairs(Handle:GetTouchingParts()) do
+									if hit:IsA("BasePart") then
+										if hit.Parent ~= Char then
+											for _, Child in pairs(qChar:GetChildren()) do
+												for _ = 1, Settings.Damage do
+													if Child:IsA("BasePart") then
+														firetouchinterest(Child, Handle, 0)
+														firetouchinterest(Child, Handle, 1)
+														firetouchinterest(Child, Handle, 0)
+													end
+												end
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
 end)
+
 
 
 
@@ -726,6 +775,7 @@ RunService.Stepped:Connect(function()
 
 
 		local Target = nil
+		local Radius = Settings2.AimbotSliderValue
 
 		for _, p in pairs(Players:GetPlayers()) do
 			if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid").Health ~= 0 then
@@ -733,8 +783,8 @@ RunService.Stepped:Connect(function()
 				local pChar = p.Character
 				local Distance = (Char:FindFirstChild("HumanoidRootPart").Position - pChar:FindFirstChild("HumanoidRootPart").Position).Magnitude
 
-				if Distance <= Settings2.AimbotSliderValue then
-					Settings2.AimbotSliderValue = Distance
+				if Distance < Radius then
+					Radius = Distance
 					Target = pChar:FindFirstChild(Settings2.AimbotTargetPart)
 				end
 			end
@@ -767,15 +817,13 @@ RunService.Stepped:Connect(function()
 				local HRP = Char and Char:FindFirstChild("HumanoidRootPart")
 				local HM = Char and Char:FindFirstChildOfClass("Humanoid")
 
-				if HRP and pHRP then
-					local Distance = (HRP.Position - pHRP.Position).Magnitude
+				local Distance = (HRP.Position - pHRP.Position).Magnitude
 					
-					if Distance <= Settings2.JumpbotRange then
-						if HM and pHM then
-							if HM.Health > 0 and pHM.Health > 0 and pHM.Jumping then
-								if HM then
-									HM.Jump = true
-								end
+				if Distance <= Settings2.JumpbotRange then
+					if HM and pHM then
+						if HM.Health > 0 and pHM.Health > 0 then
+							if pHM.Jumping then
+								HM.Jump = true
 							end
 						end
 					end
@@ -825,15 +873,16 @@ local GuiToggle = MiscTab:CreateToggle({
 
 RunService.RenderStepped:Connect(function()
 	
-	local playerGui = player:FindFirstChild("PlayerGui")
-	local UIF = playerGui:FindFirstChild("UserInterface")
-	local Menus = UIF:FindFirstChild("Menus")
-	
+	if game.PlaceId == 6361937392 then
+		 _G.playerGui = player:FindFirstChild("PlayerGui")
+		_G.UIF = _G.playerGui:FindFirstChild("UserInterface")
+		_G.Menus = _G.UIF:FindFirstChild("Menus")
+	end
 	
 	if Settings3.guiToggle then
 		--if game.PlaceId == 6361937392 then
-			if playerGui and UIF and Menus then
-				for _, GUI in pairs(Menus:GetChildren()) do
+			if _G.playerGui and _G.UIF and _G.Menus then
+				for _, GUI in pairs(_G.Menus:GetChildren()) do
 					if GUI.Name == "Store" or "Quests" or "Inventory" or "Index" or "BulkRewards" or "Marketplace" or "Arcade" or "Clans" or "UpdateLog" then
 						if GUI then
 							GUI.Visible = false
@@ -844,8 +893,8 @@ RunService.RenderStepped:Connect(function()
 		--end
 	else
 		--if game.PlaceId == 6361937392 then
-			if playerGui and UIF and Menus then
-				for _, GUI in pairs(Menus:GetChildren()) do
+			if _G.playerGui and _G.UIF and _G.Menus then
+				for _, GUI in pairs(_G.Menus:GetChildren()) do
 					if GUI.Name == "Store" or "Quests" or "Inventory" or "Index" or "BulkRewards" or "Marketplace" or "Arcade" or "Clans" or "UpdateLog" then
 						if GUI then
 							GUI.Visible = true
