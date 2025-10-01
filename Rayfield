@@ -31,6 +31,8 @@ getgenv().Settings = {
 	
 
 	AmpToggle = nil , 
+	
+	AmpMode = nil,
 
 	Damage = 2 , 
 	
@@ -55,7 +57,6 @@ VisualP.CastShadow = false
 VisualP.Transparency = 0.9
 VisualP.Material = Enum.Material.Neon
 VisualP.Shape = "Ball"
-
 
 
 
@@ -189,35 +190,41 @@ local ReachColorPicker = MainTab:CreateColorPicker({
 
 
 
-
-
-
 local DamageSection = MainTab:CreateSection("Damage")
 
 local DamageToggleButton = MainTab:CreateToggle({
 	Name = "Damage",
 	CurrentValue = false,
-	Flag = "DamageToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Flag = "DamageToggle", 
 	Callback = function(DamageToggleValue)
 		Settings.AmpToggle = DamageToggleValue
 	end,
 })
 
 
-local DamageSlider = MainTab:CreateSlider({
-	Name = "Damage Amount",
-	Range = {1, 4},
-	Increment = 1,
-	Suffix = "X",
-	CurrentValue = 2,
-	Flag = "DamageSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-	Callback = function(DamageValue)
-		Settings.Damage = DamageValue
+local AmpDropdown = MainTab:CreateDropdown({
+	Name = "Amp mode",
+	Options = { "Legit", "Blatant" },
+	CurrentOption = {"Legit"},
+	MultipleOptions = false,
+	Flag = "AmpDropdown", 
+	Callback = function(AmpOption)
+		Settings.AmpMode = AmpOption
 	end,
 })
 
 
-
+local DamageSlider = MainTab:CreateSlider({
+	Name = "Damage Amount",
+	Range = {1, 10},
+	Increment = 1,
+	Suffix = "(Lower = More DMG)",
+	CurrentValue = 2,
+	Flag = "DamageSlider", 
+	Callback = function(DamageValue)
+		Settings.Damage = DamageValue
+	end,
+})
 
 
 
@@ -264,7 +271,6 @@ local HtiboxColorPicker = MainTab:CreateColorPicker({
 		Settings.HitboxColor = HitbotColorValue
 	end
 })
-
 
 
 
@@ -348,7 +354,7 @@ end)
 
 
 
---[[local function Whitelist()
+local function Whitelist()
 	
 	local WLD = {}
 	
@@ -368,15 +374,14 @@ end)
 		end
 	end
 	return WLD
-end]]
+end
 
 
 
---[[RunService.Stepped:Connect(function()
+RunService.Stepped:Connect(function()
 	
 	if Settings.AmpToggle then
 		if not Settings.ReachToggle then
-			
 			
 			for _, p in pairs(Players:GetPlayers()) do
 				if p.Name ~= player.Name then
@@ -395,58 +400,10 @@ end]]
 
 							if tool and Handle then
 								
-								for _, hit in pairs(Handle:GetTouchingParts()) do
-									if hit == Whitelist() then
-										for _, Child in pairs(qChar:GetChildren()) do
-											for _ = 1, Settings.Damage do
-												if Child:IsA("BasePart") then
-													firetouchinterest(Child, Handle, 0)
-													firetouchinterest(Child, Handle, 1)
-													firetouchinterest(Child, Handle, 0)
-												end
-											end
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-			
-		end
-	end
-end)]]
-
-
-
-
-
-RunService.Stepped:Connect(function() -- amp V2
-
-	if Settings.AmpToggle then
-		if not Settings.ReachToggle then
-
-			for _, p in pairs(Players:GetPlayers()) do
-				if p.Name ~= player.Name then
-
-					local qChar = p.Character
-					local qHM = qChar and qChar:FindFirstChildOfClass("Humanoid")
-
-					local Char = player.Character
-					local HM = Char and Char:FindFirstChildOfClass("Humanoid")
-
-					if HM and qHM then
-						if HM.Health > 0 and qHM.Health > 0 then
-
-							local tool = Char and Char:FindFirstChildOfClass("Tool")
-							local Handle = tool and tool:FindFirstChild("Handle")
-
-							if tool and Handle then
-
-								for _, hit in pairs(Handle:GetTouchingParts()) do
-									if hit:IsA("BasePart") then
-										if hit.Parent ~= Char then
+								if Settings.AmpMode == "Legit" then
+									
+									for _, hit in pairs(Handle:GetTouchingParts()) do
+										if hit == Whitelist() then
 											for _, Child in pairs(qChar:GetChildren()) do
 												for _ = 1, Settings.Damage do
 													if Child:IsA("BasePart") then
@@ -458,17 +415,35 @@ RunService.Stepped:Connect(function() -- amp V2
 											end
 										end
 									end
+									
+								elseif Settings.AmpMode == "Blatant" then
+									
+									for _, hit in pairs(Handle:GetTouchingParts()) do
+										if hit:IsA("BasePart") then
+											if hit.Parent ~= Char then
+												for _, Child in pairs(qChar:GetChildren()) do
+													for _ = 1, Settings.Damage do
+														if Child:IsA("BasePart") then
+															firetouchinterest(Child, Handle, 0)
+															firetouchinterest(Child, Handle, 1)
+															firetouchinterest(Child, Handle, 0)
+														end
+													end
+												end
+											end
+										end
+									end
 								end
+	
 							end
 						end
 					end
 				end
 			end
+			
 		end
 	end
 end)
-
-
 
 
 
@@ -543,9 +518,6 @@ RunService.Stepped:Connect(function()
 end)
 
 
-
-
-
 RunService.Stepped:Connect(function()
 	
 	if Settings.HitboxVisual then
@@ -616,12 +588,7 @@ getgenv().Settings2 = {
 
 
 
-
-
-
 local PlayerTab = Window:CreateTab("Player", nil) -- Title, Image
-
-
 
 
 local BotsSection = PlayerTab:CreateSection("AutoBots")
@@ -728,8 +695,6 @@ local AimbotOffsetSlider = PlayerTab:CreateSlider({
 
 
 
-
-
 RunService.Stepped:Connect(function()
 	if Settings2.LungeBotToggled then
 		for _, p in pairs(Players:GetPlayers()) do
@@ -761,8 +726,6 @@ RunService.Stepped:Connect(function()
 		end
 	end
 end)
-
-
 
 
 
@@ -802,8 +765,6 @@ end)
 
 
 
-
-
 RunService.Stepped:Connect(function()
 	if Settings2.JumpbotToggle then
 		for _, p in pairs(Players:GetPlayers()) do
@@ -839,14 +800,12 @@ end)
 
 
 
-
-
-
 getgenv().Settings3 = {
 	
 	guiToggle = nil
 	
 }
+
 
 
 
@@ -864,7 +823,6 @@ local GuiToggle = MiscTab:CreateToggle({
 		Settings3.guiToggle = HideGuiToggleValue
 	end,
 })
-
 
 
 
