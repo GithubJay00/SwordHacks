@@ -376,7 +376,7 @@ end
 
 
 
-_G.amp1 = RunService.Stepped:Connect(function()
+RunService.Stepped:Connect(function()
 	
 	if Settings.AmpToggle then
 		
@@ -423,22 +423,14 @@ _G.amp1 = RunService.Stepped:Connect(function()
 				end
 
 			end
-			
-		else
-			Rayfield:Notify({
-				Title = "Warning!",
-				Content = "Please make sure Damage(Blatant) is off.",
-				Duration = 2,
-				Image = nil,
-			})
-			_G.amp1:Disconnect()
+
 		end
 	end
 end)
 
 
 
-_G.amp2 = RunService.Stepped:Connect(function()
+RunService.Stepped:Connect(function()
 
 	if Settings.BlatantAmpToggle then
 		
@@ -487,15 +479,7 @@ _G.amp2 = RunService.Stepped:Connect(function()
 				end
 
 			end
-			
-		else
-			Rayfield:Notify({
-				Title = "Warning!",
-				Content = "Please make sure Damage is off.",
-				Duration = 2,
-				Image = nil,
-			})
-			_G.amp2:Disconnect()
+
 		end
 	end
 end)
@@ -903,72 +887,92 @@ RunService.RenderStepped:Connect(function()
 		 _G.playerGui = player:FindFirstChild("PlayerGui")
 		_G.UIF = _G.playerGui:FindFirstChild("UserInterface")
 		_G.Menus = _G.UIF:FindFirstChild("Menus")
+		
+		if Settings3.guiToggle then
+
+			if _G.Menus:FindFirstChild("Store") then
+				if _G.Menus:FindFirstChild("Store").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Store").Visible = false
+				else
+					_G.Menus:FindFirstChild("Store").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Quests") then
+				if _G.Menus:FindFirstChild("Quests").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Quests").Visible = false
+				else
+					_G.Menus:FindFirstChild("Quests").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Inventory") then
+				if _G.Menus:FindFirstChild("Inventory").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Inventory").Visible = false
+				else
+					_G.Menus:FindFirstChild("Inventory").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Index") then
+				if _G.Menus:FindFirstChild("Index").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Index").Visible = false
+				else
+					_G.Menus:FindFirstChild("Index").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("BulkRewards") then
+				if _G.Menus:FindFirstChild("BulkRewards").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("BulkRewards").Visible = false
+				else
+					_G.Menus:FindFirstChild("BulkRewards").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Marketplace") then
+				if _G.Menus:FindFirstChild("Marketplace").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Marketplace").Visible = false
+				else
+					_G.Menus:FindFirstChild("Marketplace").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Arcade") then
+				if _G.Menus:FindFirstChild("Arcade").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Arcade").Visible = false
+				else
+					_G.Menus:FindFirstChild("Arcade").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("Clans") then
+				if _G.Menus:FindFirstChild("Clans").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("Clans").Visible = false
+				else
+					_G.Menus:FindFirstChild("Clans").Visible = true
+				end
+			end
+
+
+			if _G.Menus:FindFirstChild("UpdateLog") then
+				if _G.Menus:FindFirstChild("UpdateLog").Position == UDim2.new(0.5, 0, 1.5, 0) then
+					_G.Menus:FindFirstChild("UpdateLog").Visible = false
+				else
+					_G.Menus:FindFirstChild("UpdateLog").Visible = true
+				end
+			end
+		end
+		
 	end
 	
-	if Settings3.guiToggle then
-
-		if _G.Menus:FindFirstChild("Store") then
-			if _G.Menus:FindFirstChild("Store").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Store").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Quests") then
-			if _G.Menus:FindFirstChild("Quests").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Quests").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Inventory") then
-			if _G.Menus:FindFirstChild("Inventory").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Inventory").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Index") then
-			if _G.Menus:FindFirstChild("Index").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Index").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("BulkRewards") then
-			if _G.Menus:FindFirstChild("BulkRewards").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("BulkRewards").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Marketplace") then
-			if _G.Menus:FindFirstChild("Marketplace").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Marketplace").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Arcade") then
-			if _G.Menus:FindFirstChild("Arcade").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Arcade").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("Clans") then
-			if _G.Menus:FindFirstChild("Clans").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("Clans").Visible = false
-			end
-		end
-
-
-		if _G.Menus:FindFirstChild("UpdateLog") then
-			if _G.Menus:FindFirstChild("UpdateLog").Position == UDim2.new({0.5, 0}, {1.5, 0}) then
-				_G.Menus:FindFirstChild("UpdateLog").Visible = false
-			end
-		end
-	end
 end)
 
 
